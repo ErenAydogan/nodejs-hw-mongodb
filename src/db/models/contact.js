@@ -23,10 +23,11 @@ const contactSchema = new Schema(
             required: true,
             enum: ['work', 'home', 'personal'],
             default: "personal",
-        },
-        {
-            timestamps: true,
-            versionKey: false
         }
+    },
+    {
+        timestamps: true
     }
 )
+
+export const ContactCollection = model('contact', contactSchema)
