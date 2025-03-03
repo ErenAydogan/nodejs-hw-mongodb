@@ -1,9 +1,13 @@
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from "../services/contacts.js"
 import createHttpError from "http-errors";
+import { parsePaginationParams } from "../utils/parsePaginationParams.js";
+import { parseSortParams } from "../utils/parseSortParams.js";
 
 
 export const getContactsController = async (req, res) => { 
-    const contacts = await getAllContacts()
+    const { page, perPage } = parsePaginationParams(req.query)
+    const { sortBy, sortOrder } = parseSortParams(req.query)
+    const contacts = await getAllContacts({ page, perPage, sortBy, sortOrder })
     res.status(200).json(
         {
             status: 200,
@@ -35,12 +39,6 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
     const {name, phoneNumber, contactType } = req.body
-    if (!name || !phoneNumber || !contactType){
-        res.status(400).json({
-            message: 'Missing required fields: name, phoneNumber or contactType'
-        })
-        return
-    }
 
     const contact = await createContact(req.body)
     res.status(201).json(
